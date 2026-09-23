@@ -1,0 +1,186 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --color-ink: #05070f;
+  --color-navy: #0a1230;
+  --color-line: rgba(255, 255, 255, 0.09);
+  --color-fg: #f4f6ff;
+  --color-muted: #9aa3bd;
+  --color-blue: #4f7cff;
+  --color-violet: #8b6cff;
+  --color-cyan: #4fd8e8;
+}
+
+html {
+  scroll-behavior: smooth;
+  background: var(--color-ink);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  color: var(--color-fg);
+  background: var(--color-ink);
+  overflow-x: clip;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 { font-family: var(--font-display); letter-spacing: -0.02em; }
+
+section[id] { scroll-margin-top: 4.5rem; }
+
+::selection { background: rgba(79, 124, 255, 0.4); color: #fff; }
+
+:focus-visible {
+  outline: 2px solid var(--color-cyan);
+  outline-offset: 3px;
+  border-radius: 8px;
+}
+
+/* film grain */
+.grain::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+.glass {
+  background: linear-gradient(180deg, rgba(255,255,255,0.055), rgba(255,255,255,0.02));
+  border: 1px solid var(--color-line);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 10px 40px -18px rgba(0, 0, 0, 0.8);
+}
+
+.cursor-glow-card {
+  --mouse-x: 50%;
+  --mouse-y: 50%;
+  position: relative;
+  isolation: isolate;
+}
+
+.cursor-glow-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  padding: 2px;
+  border-radius: inherit;
+  background: radial-gradient(110px circle at var(--mouse-x) var(--mouse-y), rgba(95, 224, 238, 0.95), rgba(79, 124, 255, 0.42) 38%, transparent 72%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 260ms ease;
+}
+
+.cursor-glow-card:hover::after { opacity: 1; }
+
+.text-gradient {
+  background: linear-gradient(100deg, #7ea2ff 0%, #a48cff 50%, #5fe0ee 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* The custom pointer only owns non-text surfaces; native cursors stay available for content and fields. */
+html.has-custom-cursor,
+html.has-custom-cursor * { cursor: none; }
+
+html.has-custom-cursor[data-cursor-state="native"],
+html.has-custom-cursor[data-cursor-state="native"] * { cursor: auto; }
+
+html.has-custom-cursor[data-cursor-state="native"] input,
+html.has-custom-cursor[data-cursor-state="native"] textarea,
+html.has-custom-cursor[data-cursor-state="native"] [contenteditable="true"] { cursor: text; }
+
+html.has-custom-cursor[data-cursor-state="native"] p,
+html.has-custom-cursor[data-cursor-state="native"] h1,
+html.has-custom-cursor[data-cursor-state="native"] h2,
+html.has-custom-cursor[data-cursor-state="native"] h3,
+html.has-custom-cursor[data-cursor-state="native"] h4,
+html.has-custom-cursor[data-cursor-state="native"] h5,
+html.has-custom-cursor[data-cursor-state="native"] h6,
+html.has-custom-cursor[data-cursor-state="native"] li,
+html.has-custom-cursor[data-cursor-state="native"] p span,
+html.has-custom-cursor[data-cursor-state="native"] code,
+html.has-custom-cursor[data-cursor-state="native"] pre { cursor: text; }
+
+.cursor-core,
+.cursor-follower {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: block;
+  border-radius: 999px;
+  pointer-events: none;
+  transform: translate3d(var(--cursor-x, -100px), var(--cursor-y, -100px), 0) translate(-50%, -50%) scale(var(--cursor-scale, 1)) rotate(var(--cursor-rotate, 0deg));
+  will-change: transform, opacity;
+}
+
+.cursor-core {
+  width: 7px;
+  height: 7px;
+  border: 1px solid rgba(255, 255, 255, 0.98);
+  background: var(--color-ink);
+  box-shadow: 0 0 0 1px rgba(5, 7, 15, 0.55), 0 0 10px rgba(95, 224, 238, 0.3);
+  z-index: 2;
+}
+
+.cursor-follower {
+  width: 30px;
+  height: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  background: rgba(255, 255, 255, 0.1);
+  mix-blend-mode: difference;
+  transition: width 220ms ease, height 220ms ease, border-radius 220ms ease, background-color 220ms ease, opacity 220ms ease;
+}
+
+.cursor-follower--button {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+}
+
+.cursor-follower--link {
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  --cursor-rotate: 45deg;
+}
+
+.cursor-follower--view {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.cursor-follower--image {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+}
+
+.cursor-follower__label {
+  display: grid;
+  height: 100%;
+  place-items: center;
+  color: #fff;
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  mix-blend-mode: normal;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
